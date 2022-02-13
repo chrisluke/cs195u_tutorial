@@ -90,8 +90,15 @@ void View::initializeGL()
     /** SUPPORT CODE END **/
 
     // TODO (Lab 1): Initialize camera
+    m_camera = std::make_shared<Camera>();
+    m_camera->setEye(glm::vec3(0,  1, 0));
+    m_graphics->setCamera(m_camera);
 
     // TODO (Lab 1): Initialize material
+    Material myFirstMaterial; myFirstMaterial.color = glm::vec3(0, 1, 0);
+    m_graphics->addMaterial("boringGreen", myFirstMaterial);
+    Material mySecondMaterial; mySecondMaterial.textureName = "grass";
+    m_graphics->addMaterial("boringGrass", mySecondMaterial);
 
     // TODO (Warmup 1): Initialize application
 }
@@ -100,7 +107,7 @@ void View::paintGL()
 {
     /** SUPPORT CODE START **/
 
-    m_graphics->setClearColor(glm::vec3(0, 0, 0));
+    m_graphics->setClearColor(glm::vec3(1, 0, 0));
     m_graphics->clearScreen(Graphics::CLEAR_FLAG::ALL);
     m_graphics->clearShader();
     m_graphics->setDefaultMaterial();
@@ -109,6 +116,15 @@ void View::paintGL()
 
 
     // TODO (Lab 1): Call your game rendering code here
+    m_graphics->clearTransform(); m_graphics->scale(20);
+    //m_graphics->setMaterial("boringGreen");
+    m_graphics->setMaterial("boringGrass");
+    m_graphics->drawShape("quad");
+
+    m_graphics->clearTransform(); m_graphics->setDefaultMaterial();
+    m_graphics->translate(glm::vec3(1.f,1.f,10.f)); m_graphics->scale(5);
+    m_graphics->drawShape("cylinder");
+
 
     // TODO (Warmup 1): Call your game rendering code here
 
@@ -132,6 +148,7 @@ void View::resizeGL(int w, int h)
     /** SUPPORT CODE END **/
 
     // TODO (Lab 1): Resize the camera
+    m_camera->setScreenSize(glm::vec2(w, h));
 
     // TODO (Warmup 1): Resize the application
 }
@@ -167,6 +184,7 @@ void View::mouseMoveEvent(QMouseEvent *event)
     /** SUPPORT CODE END **/
 
     // TODO (Lab 1): Handle mouse movements here
+    m_camera->rotate(-deltaX / 100.f, -deltaY  / 100.f);
 
     // TODO (Warmup 1): Handle mouse movements here
 }
@@ -197,6 +215,14 @@ void View::keyPressEvent(QKeyEvent *event)
     /** SUPPORT CODE END **/
 
     // TODO (Lab 1): Handle keyboard presses here
+    glm::vec3 look = m_camera->getLook();
+    glm::vec3 dir = glm::normalize(glm::vec3(look.x, 0, look.z));
+    glm::vec3 perp = glm::vec3(dir.z, 0, -dir.x);
+    // strafe movement
+    if(event->key() == Qt::Key_W) m_camera->translate(dir);
+    if(event->key() == Qt::Key_S) m_camera->translate(-dir);
+    if(event->key() == Qt::Key_A) m_camera->translate(perp);
+    if(event->key() == Qt::Key_D) m_camera->translate(-perp);
 
     // TODO (Warmup 1): Handle keyboard presses here
 }
@@ -254,3 +280,4 @@ void View::tick()
 
     /** SUPPORT CODE END **/
 }
+
