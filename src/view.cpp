@@ -19,7 +19,8 @@ View::View(QWidget *parent) : QGLWidget(ViewFormat(), parent),
     m_captureMouse(true),
     m_fps(0), m_frameIndex(0),
     m_graphics(nullptr),
-    m_camera(nullptr)
+    m_camera(nullptr),
+    m_gameApp(nullptr)
 {
     /** SUPPORT CODE START **/
 
@@ -48,6 +49,7 @@ View::View(QWidget *parent) : QGLWidget(ViewFormat(), parent),
     m_frameIndex = 0;
 
     /** SUPPORT CODE END **/
+    m_gameApp = GameApplication(m_camera);
 }
 
 View::~View()
@@ -98,9 +100,12 @@ void View::initializeGL()
     Material myFirstMaterial; myFirstMaterial.color = glm::vec3(0, 1, 0);
     m_graphics->addMaterial("boringGreen", myFirstMaterial);
     Material mySecondMaterial; mySecondMaterial.textureName = "grass";
+    mySecondMaterial.textureRepeat = glm::vec2(100, 100);
     m_graphics->addMaterial("boringGrass", mySecondMaterial);
 
     // TODO (Warmup 1): Initialize application
+    m_gameApp = GameApplication(m_camera);
+
 }
 
 void View::paintGL()
@@ -115,17 +120,17 @@ void View::paintGL()
     /** SUPPORT CODE END **/
 
 
-    // TODO (Lab 1): Call your game rendering code here
-    m_graphics->clearTransform(); m_graphics->scale(20);
+    /*// TODO (Lab 1): Call your game rendering code here
+    m_graphics->clearTransform(); m_graphics->scale(10);
     //m_graphics->setMaterial("boringGreen");
     m_graphics->setMaterial("boringGrass");
     m_graphics->drawShape("quad");
 
     m_graphics->clearTransform(); m_graphics->setDefaultMaterial();
     m_graphics->translate(glm::vec3(1.f,1.f,10.f)); m_graphics->scale(5);
-    m_graphics->drawShape("cylinder");
+    m_graphics->drawShape("cylinder");*/
 
-
+    m_gameApp.draw(m_graphics);
     // TODO (Warmup 1): Call your game rendering code here
 
     /** SUPPORT CODE START **/
@@ -156,6 +161,7 @@ void View::resizeGL(int w, int h)
 void View::mousePressEvent(QMouseEvent *event)
 {
     // TODO (Warmup 1): Handle mouse press events
+    m_gameApp.mousePressEvent(event);
 }
 
 void View::mouseMoveEvent(QMouseEvent *event)
@@ -184,14 +190,16 @@ void View::mouseMoveEvent(QMouseEvent *event)
     /** SUPPORT CODE END **/
 
     // TODO (Lab 1): Handle mouse movements here
-    m_camera->rotate(-deltaX / 100.f, -deltaY  / 100.f);
+    //m_camera->rotate(-deltaX / 100.f, -deltaY  / 100.f);
 
     // TODO (Warmup 1): Handle mouse movements here
+    m_gameApp.mouseMoveEvent(deltaX, deltaY);
 }
 
 void View::mouseReleaseEvent(QMouseEvent *event)
 {
     // TODO (Warmup 1): Handle mouse release here
+    m_gameApp.mouseReleaseEvent(event);
 }
 
 void View::wheelEvent(QWheelEvent *event)
@@ -204,7 +212,7 @@ void View::keyPressEvent(QKeyEvent *event)
     /** SUPPORT CODE START **/
 
     // Don't remove this -- helper code for key repeat events
-    if(event->isAutoRepeat()) {
+    /**if(event->isAutoRepeat()) {
         keyRepeatEvent(event);
         return;
     }
@@ -212,19 +220,20 @@ void View::keyPressEvent(QKeyEvent *event)
     // Feel free to remove this
     if (event->key() == Qt::Key_Escape) QApplication::quit();
 
-    /** SUPPORT CODE END **/
+    /* SUPPORT CODE END **/
 
     // TODO (Lab 1): Handle keyboard presses here
-    glm::vec3 look = m_camera->getLook();
+    /*glm::vec3 look = m_camera->getLook();
     glm::vec3 dir = glm::normalize(glm::vec3(look.x, 0, look.z));
     glm::vec3 perp = glm::vec3(dir.z, 0, -dir.x);
     // strafe movement
     if(event->key() == Qt::Key_W) m_camera->translate(dir);
     if(event->key() == Qt::Key_S) m_camera->translate(-dir);
     if(event->key() == Qt::Key_A) m_camera->translate(perp);
-    if(event->key() == Qt::Key_D) m_camera->translate(-perp);
+    if(event->key() == Qt::Key_D) m_camera->translate(-perp);*/
 
     // TODO (Warmup 1): Handle keyboard presses here
+    m_gameApp.keyPressEvent(event);
 }
 
 void View::keyRepeatEvent(QKeyEvent *event)
@@ -271,8 +280,16 @@ void View::tick()
 
 
     // TODO (Warmup 1): Implement the game update here
+    /*glm::vec3 gravity = glm::vec3(0, -10.0, 0);
+    if (m_camera->getEye().y >= 0)
+    {
+       m_camera->translate(gravity * seconds * seconds);
+    } else {
+       glm::vec3 reset = glm::vec3(m_camera->getEye().x, 0, m_camera->getEye().z);
+       m_camera->setEye(reset);
+    }*/
 
-
+    m_gameApp.tick(seconds);
     /** SUPPORT CODE START **/
 
     // Flag this view for repainting (Qt will call paintGL() soon after)

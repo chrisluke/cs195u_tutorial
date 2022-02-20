@@ -2,6 +2,7 @@
 #define VIEW_H
 
 #include "engine/util/CommonIncludes.h"
+#include "game_logic/gameapplication.h"
 
 #include <QGLWidget>
 #include <QTime>
@@ -57,6 +58,7 @@ private:
     std::shared_ptr<Camera> m_camera;
 
     // TODO (Warmup 1): Add an application variable to the View class
+    GameApplication m_gameApp;
 
 private slots:
     void tick();

@@ -23,6 +23,9 @@ SOURCES += \
     libs/glew-1.10.0/src/glew.c \
     src/engine/application.cpp \
     src/engine/screen.cpp \
+    src/game_logic/gameapplication.cpp \
+    src/game_logic/gamescreen.cpp \
+    src/game_logic/titlescreen.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/view.cpp \
@@ -55,6 +58,9 @@ HEADERS += \
     src/engine/application.h \
     src/engine/screen.h \
     src/engine/util/TypeMap.h \
+    src/game_logic/gameapplication.h \
+    src/game_logic/gamescreen.h \
+    src/game_logic/titlescreen.h \
     src/mainwindow.h \
     src/view.h \
     src/viewformat.h \
