@@ -20,7 +20,7 @@
 using namespace std;
 using namespace glm;
 
-GameApplication::GameApplication(std::shared_ptr<Camera> camera)
+GameApplication::GameApplication(std::shared_ptr<Camera> camera, std::shared_ptr<InputManager> inputManager)
 {
     //m_graphics = Graphics::getGlobalInstance();
     m_camera = camera;
@@ -28,6 +28,7 @@ GameApplication::GameApplication(std::shared_ptr<Camera> camera)
     m_titleScreen = std::make_shared<TitleScreen>(camera);
     m_screen_list = {m_titleScreen, m_gameScreen};
     m_activeScreen = m_screen_list[1];
+    m_inputManager = inputManager;
 }
 
 GameApplication::~GameApplication()
@@ -45,9 +46,7 @@ void GameApplication::mouseMoveEvent(int deltaX, int deltaY)
 {
     /** SUPPORT CODE START **/
     // TODO (Warmup 1): Handle mouse movements here
-    m_activeScreen->mouseMoveEvent(deltaX, deltaY);
-
-
+    //m_activeScreen->mouseMoveEvent(deltaX, deltaY);
 }
 
 void GameApplication::mouseReleaseEvent(QMouseEvent *event)
@@ -58,6 +57,7 @@ void GameApplication::mouseReleaseEvent(QMouseEvent *event)
 void GameApplication::wheelEvent(QWheelEvent *event)
 {
     // TODO (Warmup 1): Handle mouse wheel events here
+    //m_activeScreen->wheelEvent(event);
 }
 
 void GameApplication::keyPressEvent(QKeyEvent *event)
@@ -71,7 +71,10 @@ void GameApplication::keyPressEvent(QKeyEvent *event)
     }
 
     // Feel free to remove this
-    if (event->key() == Qt::Key_Escape) QApplication::quit();
+    if (m_inputManager->m_keyInputs["esc"] == 1) {
+        std::cout << "quit" <<std::endl;
+        QApplication::quit();
+    }
 
     /** SUPPORT CODE END **/
 
@@ -85,16 +88,15 @@ void GameApplication::keyPressEvent(QKeyEvent *event)
         std::cout << "game switch";
         m_activeScreen = m_screen_list[1];
     }
-
-    m_activeScreen->keyPressEvent(event);
+    //m_activeScreen->keyPressEvent(event);
 
     // TODO (Warmup 1): Handle keyboard presses here
-
 }
 
 void GameApplication::keyRepeatEvent(QKeyEvent *event)
 {
     // TODO (Warmup 1): Handle key repeats (happens when holding down keys)
+    //m_activeScreen->keyRepeatEvent(event);
 }
 
 void GameApplication::keyReleaseEvent(QKeyEvent *event)
@@ -111,6 +113,20 @@ void GameApplication::keyReleaseEvent(QKeyEvent *event)
     // TODO (Warmup 1): Handle key releases
 }
 
+void GameApplication::handleInputs()
+{
+
+    if (m_inputManager->m_keyInputs["esc"] == 1) {
+        QApplication::quit();
+    }
+    if(m_inputManager->m_keyInputs["1"] == 1) {
+        m_activeScreen = m_screen_list[0];
+    }
+    if(m_inputManager->m_keyInputs["2"] == 1) {
+        m_activeScreen = m_screen_list[1];
+    }
+}
+
 void GameApplication::draw(Graphics *g)
 {
     m_activeScreen->draw(g);
@@ -122,6 +138,8 @@ void GameApplication::tick(float seconds)
 
     // TODO (Warmup 1): Implement the game update here
     m_activeScreen->tick(seconds);
+    this->handleInputs();
+    m_activeScreen->handleInputs(m_inputManager);
 
     /** SUPPORT CODE START **/
 

@@ -22,9 +22,19 @@ win32 {
 SOURCES += \
     libs/glew-1.10.0/src/glew.c \
     src/engine/application.cpp \
+    src/engine/inputmanager.cpp \
     src/engine/screen.cpp \
+    src/game_logic/components/collisioncomponent.cpp \
+    src/game_logic/components/component.cpp \
+    src/game_logic/components/drawcomponent.cpp \
+    src/game_logic/components/tickcomponent.cpp \
     src/game_logic/gameapplication.cpp \
+    src/game_logic/gameobject.cpp \
     src/game_logic/gamescreen.cpp \
+    src/game_logic/gameworld.cpp \
+    src/game_logic/systems/drawsystem.cpp \
+    src/game_logic/systems/system.cpp \
+    src/game_logic/systems/ticksystem.cpp \
     src/game_logic/titlescreen.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
@@ -56,10 +66,20 @@ HEADERS += \
     libs/stb/stb_rect_pack.h \
     libs/stb/stb_truetype.h \
     src/engine/application.h \
+    src/engine/inputmanager.h \
     src/engine/screen.h \
     src/engine/util/TypeMap.h \
+    src/game_logic/components/collisioncomponent.h \
+    src/game_logic/components/component.h \
+    src/game_logic/components/drawcomponent.h \
+    src/game_logic/components/tickcomponent.h \
     src/game_logic/gameapplication.h \
+    src/game_logic/gameobject.h \
     src/game_logic/gamescreen.h \
+    src/game_logic/gameworld.h \
+    src/game_logic/systems/drawsystem.h \
+    src/game_logic/systems/system.h \
+    src/game_logic/systems/ticksystem.h \
     src/game_logic/titlescreen.h \
     src/mainwindow.h \
     src/view.h \

@@ -20,7 +20,7 @@ View::View(QWidget *parent) : QGLWidget(ViewFormat(), parent),
     m_fps(0), m_frameIndex(0),
     m_graphics(nullptr),
     m_camera(nullptr),
-    m_gameApp(nullptr)
+    m_gameApp(nullptr, nullptr)
 {
     /** SUPPORT CODE START **/
 
@@ -49,7 +49,9 @@ View::View(QWidget *parent) : QGLWidget(ViewFormat(), parent),
     m_frameIndex = 0;
 
     /** SUPPORT CODE END **/
-    m_gameApp = GameApplication(m_camera);
+    m_inputManager = std::make_shared<InputManager>();
+    m_gameApp = GameApplication(m_camera, m_inputManager);
+
 }
 
 View::~View()
@@ -104,7 +106,7 @@ void View::initializeGL()
     m_graphics->addMaterial("boringGrass", mySecondMaterial);
 
     // TODO (Warmup 1): Initialize application
-    m_gameApp = GameApplication(m_camera);
+    m_gameApp = GameApplication(m_camera, m_inputManager);
 
 }
 
@@ -193,7 +195,7 @@ void View::mouseMoveEvent(QMouseEvent *event)
     //m_camera->rotate(-deltaX / 100.f, -deltaY  / 100.f);
 
     // TODO (Warmup 1): Handle mouse movements here
-    m_gameApp.mouseMoveEvent(deltaX, deltaY);
+    m_inputManager->mouseMoveEvent(deltaX, deltaY);
 }
 
 void View::mouseReleaseEvent(QMouseEvent *event)
@@ -233,7 +235,8 @@ void View::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_D) m_camera->translate(-perp);*/
 
     // TODO (Warmup 1): Handle keyboard presses here
-    m_gameApp.keyPressEvent(event);
+    std::cout << "key press" << std::endl;
+    m_inputManager->keyPressEvent(event);
 }
 
 void View::keyRepeatEvent(QKeyEvent *event)
@@ -253,6 +256,8 @@ void View::keyReleaseEvent(QKeyEvent *event)
     /** SUPPORT CODE END **/
 
     // TODO (Warmup 1): Handle key releases
+    m_inputManager->keyReleaseEvent(event);
+
 }
 
 void View::tick()

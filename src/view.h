@@ -3,6 +3,7 @@
 
 #include "engine/util/CommonIncludes.h"
 #include "game_logic/gameapplication.h"
+#include "engine/inputmanager.h"
 
 #include <QGLWidget>
 #include <QTime>
@@ -59,6 +60,7 @@ private:
 
     // TODO (Warmup 1): Add an application variable to the View class
     GameApplication m_gameApp;
+    std::shared_ptr<InputManager> m_inputManager;
 
 private slots:
     void tick();
